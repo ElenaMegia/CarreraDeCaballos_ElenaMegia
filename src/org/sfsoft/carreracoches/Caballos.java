@@ -1,6 +1,7 @@
 package src.org.sfsoft.carreracoches;
 
 import java.util.Random;
+import java.util.concurrent.locks.Lock;
 
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
@@ -13,8 +14,10 @@ public class Caballos extends SwingWorker<Void, Integer> {
     private int distanciaRecorrida;
     private JLabel marcador;
     private String nombre;
+    private final Lock lock;
 
-    public Caballos(int i, int distancia, JLabel lbMarcador, String nombre) {
+    public Caballos(int i, int distancia, JLabel lbMarcador, String nombre, Lock lock) {
+        this.lock = lock;
         this.velocidad = velocidad;
         this.distanciaCarrera = distanciaCarrera;
         this.distanciaRecorrida = distanciaRecorrida;
@@ -23,7 +26,8 @@ public class Caballos extends SwingWorker<Void, Integer> {
     }
 
     public Caballos(int distanciaCarrera,
-                    JLabel marcador, String nombre) {
+                    JLabel marcador, String nombre, Lock lock) {
+        this.lock = lock;
 
         this.velocidad = new Random().nextInt(30) + 5;
         this.distanciaCarrera = distanciaCarrera;

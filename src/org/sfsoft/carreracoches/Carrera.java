@@ -1,5 +1,7 @@
 package src.org.sfsoft.carreracoches;
 
+import jdk.internal.misc.VM;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -51,32 +53,35 @@ public class Carrera {
 	private JLabel[] lblNewLabel = new JLabel[]{lblNewLabel_1, lblNewLabel_2, lblNewLabel_3, lblNewLabel_4, lblNewLabel_5, lblNewLabel_6, lblNewLabel_7, lblNewLabel_8};
 
 	public static int dameCaballos() {
-		Scanner sc = new Scanner(System.in);
+		Scanner leer = new Scanner(System.in);
 
 		// Entrada de datos numéricos
 		// byte, short y float
 		try {
 			System.out.println("Introduce el numero de caballos:");
-			NUM_CABALLOS = sc.nextInt();
-			if (NUM_CABALLOS > 8) {
-				Exception e;
-				System.out.println("No es un valor válido");
-			}
+			NUM_CABALLOS = leer.nextInt();
+			//if (NUM_CABALLOS > 8) {
+			//	Exception e;
+			//	System.out.println("No es un valor válido");
+			//}
 		} catch (Exception e) {
 			System.out.println("No es un valor válido");
 		}
-		sc.close();
+		leer.close();
 		return NUM_CABALLOS;
 	}
 
-	private void correr(String [] args) {
+	public static void correr(String[] args) {
+	}
+
+	private void correr() {
 		int length = dameCaballos();
 		int distancia = Integer.parseInt(tfDistancia.getText());
 
 		Caballos[] caballos = new Caballos[length];
 
 		for (int i = 0; i < length; i++) {
-			Caballos caballo = new Caballos((int) (Math.random() * 40 + 1), distancia, lbMarcador, NOMBRE[i]);
+			Caballos caballo = new Caballos((int) (Math.random() * 40 + 1), distancia, lbMarcador, NOMBRE[i], lock);
 			caballos[i] = caballo;
 		}
 
@@ -121,7 +126,39 @@ public class Carrera {
 		for (int i = 0; i < length; i++) {
 			caballos[i].execute();
 		}
+
+		//Threads creation
+		Thread[] threads = new Thread[length];
+		for (int i=0; i < length; i++) {
+			Thread thread = new Thread(caballos[i]);
+			threads[i] = thread;
+			thread.start();
+		}
+
+		//Let the players play!
+		try {
+			Thread.sleep(2);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		//Tell the players to stop
+		for (Thread thread : threads) {
+			thread.interrupt();
+		}
+
+		//Don't progress main thread until all players have finished
+		try {
+			for (Thread thread : threads) {
+				thread.join();
+			}
+		}  catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Game finished!");
 	}
+
 
 	/**
 	 * Launch the application.

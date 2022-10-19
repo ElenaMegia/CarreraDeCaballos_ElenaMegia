@@ -1,6 +1,11 @@
 package src.org.sfsoft.carreracoches;
+
+import java.util.*;
+import java.util.NoSuchElementException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.io.*;
+
 
 public class Menu {
 
@@ -23,6 +28,7 @@ public class Menu {
                 switch (opcion) {
                     case 1:
                         System.out.println("Has seleccionado la opcion 1");
+                        Carrera.dameCaballos();
                         Carrera.correr(args);
                         break;
                     case 2:
@@ -35,9 +41,9 @@ public class Menu {
             } catch (Exception e) {
                 System.out.println("Debes insertar un número");
             }
-            sn.close();
-        }while(sn.nextInt()!=2);
 
+        }while(sn.nextInt()!=2);
+        sn.close();
     }
 
 }
